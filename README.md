@@ -18,7 +18,7 @@ This repository provides a reliable, reproducible framework to process raw seque
 
 To maximize compute efficiency on High-Performance Computing (HPC) clusters, the suite is divided into two modules. This modular design prevents large memory bottlenecks and isolates processing steps.
 
-1. **Module 1: Variant Calling Pipeline (`run_variant_pipeline.py`)**
+1. **Module 1: Variant Calling Pipeline (`run_variant_array.sh`)**
    A standalone Python utility that automates NGS analysis. It streams data sequentially per-sample from raw FASTQ reads all the way to functional variant annotation and candidate gene filtering.
    
 2. **Module 2: Copy Number Variation (`run_cnv_array.sh`)**
@@ -53,19 +53,26 @@ cd candida-genomics-pipeline
 ```
 
 ### 2. Run Variant Calling (Module 1)
-Point the Python script to your raw data directory and dependencies. It will automatically resolve fastq structures, handle multi-lane merging, and execute alignment and variant annotation:
+To run this cohort-wide as a parallelized job array on a Slurm cluster, configure your paths inside run_variant_array.sh and submit:
 ```bash
-python run_variant_pipeline.py   -i /path/to/raw_fastq_folders   -r /path/to/C_parapsilosis_reference.fasta   --snpeff-jar /path/to/snpEff.jar   --genes-csv assets/Genes-of-interests.csv   -o ./results   --threads 8
+sbatch run_variant_array.sh
+```
+(Optional) To run the pipeline sequentially or test a single sample locally/interactively:
+```bash
+python scripts/run_pipeline.py \
+  -i /path/to/raw_fastq_folders \
+  -r /path/to/C_parapsilosis_reference.fasta \
+  --snpeff-jar /path/to/snpEff.jar \
+  --genes-csv assets/Genes-of-interests.csv \
+  -o ./results \
+  --threads 8
 ```
 
 ### 3. Run CNV Calculation (Module 2)
-Once Module 1 completes, use the coordinate-sorted, deduplicated BAM files to calculate regional read depth and estimate copy number variation:
+Once Module 1 completes, you can use the coordinate-sorted, deduplicated BAM files (*.marked.bam) to calculate regional read depth and estimate copy number variations across your genes of interest.
+Configure your file paths inside run_cnv_array.sh and submit the job array to the cluster:
 
 ```bash
-# Step A: Compute raw targeted depth metrics across genomic intervals
-python scripts/calculate_depth.py
-
-# Step B: Submit the parallel R normalization engine to the Slurm cluster
 sbatch run_cnv_array.sh
 ```
 
