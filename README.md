@@ -1,6 +1,6 @@
 # *Candida Parapsilosis* Genomics Analysis Pipeline
 
-An automated, high-throughput bioinformatics suite designed to analyze next-generation sequencing (NGS) data from *Candida parapsilosis*. This pipeline combines end-to-end variant calling (SNVs/Indels) with parallelized Copy Number Variation (CNV) detection to profile genomic mechanisms of antifungal resistance.
+An automated, high-throughput bioinformatics suite designed to analyze next-generation sequencing (NGS) data from *Candida parapsilosis*. This pipeline combines end-to-end variant calling (SNVs) with parallelized Copy Number Variation (CNV) detection to profile genomic mechanisms of antifungal resistance.
 
 ---
 
@@ -8,7 +8,7 @@ An automated, high-throughput bioinformatics suite designed to analyze next-gene
 
 *Candida parapsilosis* is a fungal pathogen with drug-resistant clinical isolates rising globally. A primary driver of resistance to azole antifungals (like fluconazole) is mutations and copy number expansions in the targeted *ERG11* gene. 
 
-This repository provides a reliable, reproducible framework to process raw sequencing reads into clean, actionable variant matrices and copy number profiles. This exact framework was utilized to process clinical datasets and identify genomic resistance mechanisms for our peer-reviewed research:
+This repository provides a reliable, reproducible framework to process raw sequencing reads into annotated variants and copy number variations. This framework was utilized to process clinical datasets and identify genomic resistance mechanisms for research paper:
 
 > **Zhang Z**, Wang Y, et al. *Persistence and spread of fluconazole-resistant Candida parapsilosis clinical isolates associated with increased ERG11 copies in Qatar.* **Microbial Genomics**, 2026;12(2):001653.
 
