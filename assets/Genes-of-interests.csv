@@ -1,0 +1,54 @@
+Gene name,Cparap ID,Description
+ACE2,CPAR2_204370,"Ortholog(s) have DNA-binding transcription factor activity, RNA polymerase II-specific, cis-regulatory region sequence-specific DNA binding activity"
+ARR3,CPAR2_601050,"Ortholog(s) have antimonite transmembrane transporter activity, antiporter activity, arsenite transmembrane transporter activity, role in antimonite transport, arsenite transport and plasma membrane localization"
+BCR1,CPAR2_205990,"Transcription factor involved in biofilm formation; has domain(s) with predicted nucleic acid binding, zinc ion binding activity and intracellular localization"
+CDR1,CPAR2_405290,"Putative transmembrane xenobiotic transporter, overexpressed in response to fluconazole; likely involved in cellular cation homeostasis (1)Ortholog(s) have ABC-type xenobiotic transporter activity, role in cellular cation homeostasis, response to drug, xenobiotic detoxification by transmembrane export across the plasma membrane and plasma membrane localization"
+CDR1B,CPAR2_304370,"Has domain(s) with predicted ATP binding, ATPase, ATPase-coupled transmembrane transporter activity, nucleoside-triphosphatase activity, nucleotide binding activity"
+CDR2,CPAR2_401370,"ORF, Uncharacterized"
+CPH2,CPAR2_603440,Ortholog(s) have role in pseudohyphal growth
+CZF1,CPAR2_501290,"Has domain(s) with predicted DNA-binding transcription factor activity, RNA polymerase II-specific, zinc ion binding activity and role in regulation of DNA-templated transcription"
+EFG1,CPAR2_701620,APSES family DNA binding transcription factor involved in control of concentric-to-smooth colony morphology switch and biofilm formation
+ERG11,CPAR2_303740,Putative sterol 14-demethylase activity; mutations involved in fluconazole resistance
+ERG2,CPAR2_201490,Ortholog(s) have C-8 sterol isomerase activity and role in ergosterol biosynthetic process
+ERG20,CPAR2_103950,"Ortholog(s) have dimethylallyltranstransferase activity, farnesyltranstransferase activity, geranyltranstransferase activity, isopentenyl-diphosphate delta-isomerase activity"
+ERG24,CPAR2_405900,Ortholog(s) have delta14-sterol reductase activity and role in ergosterol biosynthetic process
+ERG25,CPAR2_801410,"Ortholog(s) have C-4 methylsterol oxidase activity, role in ergosterol biosynthetic process and endoplasmic reticulum, endoplasmic reticulum membrane, plasma membrane localization"
+ERG26,CPAR2_302110,"Ortholog(s) have C-3 sterol dehydrogenase (C-4 sterol decarboxylase) activity, sterol-4-alpha-carboxylate 3-dehydrogenase (decarboxylating) activity and role in ergosterol biosynthetic process"
+ERG27,CPAR2_801560,"Ortholog(s) have 3-keto sterol reductase activity, role in ergosterol biosynthetic process and endoplasmic reticulum, endoplasmic reticulum membrane, lipid droplet localization"
+ERG28,CPAR2_213750,"Ortholog(s) have protein-macromolecule adaptor activity, role in ergosterol biosynthetic process and endoplasmic reticulum membrane localization "
+ERG29,CPAR2_302020,"Ortholog(s) have role in ergosterol biosynthetic process, intracellular iron ion homeostasis, mitochondrion organization"
+ERG3,CPAR2_105550,C-5 sterol desaturase involved in ergosterol biosynthesis; mutations confer resistance to azoles and echinocandins
+ERG5,CPAR2_703970,Ortholog(s) have C-22 sterol desaturase activity and role in ergosterol biosynthetic process
+ERG6,CPAR2_405010,"Ortholog(s) have sterol 24-C-methyltransferase activity, role in ergosterol biosynthetic process and endoplasmic reticulum, lipid droplet localization"
+ERG7,CPAR2_301800,"Ortholog(s) have lanosterol synthase activity, role in ergosterol biosynthetic process and lipid droplet localization "
+FKS1,CPAR2_106400,"Putative 1,3-beta-D-glucan synthase, involved in fluconazole resistance"
+FKS2,CPAR2_804030,"Putative 1,3-beta-D-glucan synthase involved in cell wall glucan biosynthesis; target of echinocandin"
+FLO8,CPAR2_601080,"Ortholog(s) have DNA-binding transcription activator activity, RNA polymerase II-specific, RNA polymerase II cis-regulatory region sequence-specific DNA binding activity"
+FUR1,CPAR2_502030,Ortholog(s) have uracil phosphoribosyltransferase activity and role in pyrimidine-containing compound salvage
+GZF3,CPAR2_800210,"Ortholog(s) have DNA-binding transcription factor activity, RNA polymerase II-specific, sequence-specific DNA binding activity"
+HOG1,CPAR2_211840,"Ortholog(s) have MAP kinase activity, RNA polymerase II CTD heptapeptide repeat kinase activity, calmodulin binding, chromatin binding activity "
+HWP1,CPAR2_403520,"Putative hyphal cell wall protein, "
+LIP1,CPAR2_703190,Predicted triglyceride lipase; expression S. cerevisiae yields an inactive protein
+LIP2,CPAR2_703200,Lipase; demonstrates activity in vivo; glycosylated
+MDR1,CPAR2_301760,"Ortholog(s) have fluconazole transmembrane transporter activity, role in xenobiotic detoxification by transmembrane export across the plasma membrane and plasma membrane localization"
+MKC1,CPAR2_800090,"Ortholog(s) have MAP kinase activity, protein serine/threonine kinase activity"
+MLH1,CPAR2_401150,"Ortholog(s) have ATP binding, ATPase activity, role in meiotic heteroduplex formation, meiotic mismatch repair, mismatch repair, reciprocal meiotic recombination and MutLalpha complex, MutLbeta complex, MutLgamma complex localization"
+MRR1,CPAR2_807270,Regulator of MDR1 transcription; expression increased in fluconazole and voriconazole resistant strains
+MSH2,CPAR2_500160,"Ortholog(s) have ATP binding, ATPase, DNA insertion or deletion binding, Y-form DNA binding, double-strand/single-strand DNA junction binding, four-way junction DNA binding and guanine/thymine mispair binding"
+Ndt80,CPAR2_213640,"Putative DNA-binding transcription factor, involved in transcriptional regulation of genes implicated in morphogenesis, adhesion and biofilm formation"
+NRG1,CPAR2_300790,Ortholog(s) have sequence-specific DNA binding activity
+PDR1,CPAR2_102000,"Has domain(s) with predicted DNA-binding transcription factor activity, RNA polymerase II-specific, zinc ion binding activity and role in regulation of DNA-templated transcription"
+PMS1,CPAR2_806260,"Ortholog(s) have ATP binding, ATPase, DNA insertion or deletion binding, dinucleotide insertion or deletion binding, double-stranded DNA binding, heteroduplex DNA loop binding, single-stranded DNA binding activity"
+RBT1,CPAR2_403510,expression induced in biofilms and hypoxia; required for normal biofilm development
+RTA3,CPAR2_104610,"Putative lipid translocase; implicated in antifungal drug resistance (Ding C, et al. (2011) Conserved and divergent roles of Bcr1 and CFEM proteins in Candida parapsilosis and Candida albicans. PLoS One 6(12):e28151; West PT, et al. (2021) Genetic and behavioral adaptation of Candida parapsilosis to the microbiome of hospitalized infants revealed by in situ genomics, transcriptomics, and proteomics. Microbiome 9(1):142"
+SAPP1,CPAR2_102410,Secreted aspartic protease; activated by autocatalytic cleavage of a pro-sequence; induced by exogenous proteins; 
+SAPP2,CPAR2_102580,Secreted aspartic protease; constitutively expressed
+SAPP3,CPAR2_102420,Predicted aspartic-type endopeptidase
+SPT3,CPAR2_200390,"Ortholog(s) have transcription coregulator activity and role in chromatin organization, invasive growth in response to glucose limitation, pseudohyphal growth, transcription by RNA polymerase II "
+STE6,CPAR2_404230,"Ortholog(s) have ABC-type oligopeptide transporter activity, ABC-type peptide transporter activity and role in conjugation with cellular fusion, peptide pheromone export, peptide pheromone export by transmembrane transport"
+TAC1b,CPAR2_303520,"Has domain(s) with predicted DNA binding, DNA-binding transcription factor activity, RNA polymerase II-specific, zinc ion binding activity and role in regulation of transcription, DNA-templated, transcription, DNA-templated"
+TEC1,CPAR2_805930,"Ortholog(s) have DNA-binding transcription activator activity, RNA polymerase II-specific, DNA-binding transcription factor activity, RNA polymerase II cis-regulatory region sequence-specific DNA binding activity"
+UME6,CPAR2_803820,"Has domain(s) with predicted DNA-binding transcription factor activity, RNA polymerase II-specific, zinc ion binding activity and role in regulation of DNA-templated transcription"
+UPC2,CPAR2_207280,Transcription factor involved in regulation of ergosterol and lipid biosynthesis
+YMC1,CPAR2_208040,"Ortholog(s) have glycine transmembrane transporter activity, organic acid transmembrane transporter activity and role in glycine import into mitochondrion, heme biosynthetic process, mitochondrial transport"
+MDR1b,CPAR2_603010,Protein of unknown function; expression increased in fluconazole and voriconazole resistant strains; upregulated by activating mutation in MRR1; overexpression confers resistance to fluconazole

@@ -5,54 +5,73 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=8G
-#SBATCH --time=02:00:00          # Adjusted to a standard benchmark runtime string
-#SBATCH --array=1-50             # Adjust upper boundary to match your sample size
+#SBATCH --time=72:00:00
+#SBATCH --array=1-50
 
 # ==============================================================================
 # 1. ENVIRONMENT CONFIGURATION
 # ==============================================================================
-# Load system-level cluster dependencies (Adjust to your local HPC profile)
 module load StdEnv/2023 gcc/12.3 r-bundle-bioconductor/3.18
-module load r/4.4.0
+module load r/4.4.0 samtools/1.19
 
-# Define your file path infrastructures
-CNV_DIR="./11_cnv"                     # Location containing generated .depth files
+BAM_DIR="./results/5_markdup"
+BED_FILE="./assets/C_parapsilosis_CDC317.bed"
+CNV_DIR="./results/11_cnv"
 GFF_FILE="./assets/C_parapsilosis_CDC317_current_features.gff"
-GENES_CSV="./assets/Genes-of-interests-251115.csv"
-CNV_RSCRIPT="./scripts/process_cnv.R"  # Path to the refactored R analysis worker
+GENES_CSV="./assets/Genes-of-interests.csv"
+CNV_RSCRIPT="./scripts/process_cnv.R"
 
-# Make a dedicated logs folder for cleaner workspace housekeeping
-mkdir -p logs
+mkdir -p logs $CNV_DIR
 
 # ==============================================================================
 # 2. FILE INTERROGATION & ARRAY MAPPING
 # ==============================================================================
-# Collect target depth tracking grids into an index array
-FILES=("$CNV_DIR"/*.depth)
+FILES=("$BAM_DIR"/*.marked.bam)
 TOTAL_FILES=${#FILES[@]}
 
-# Safety catch if array indexing overflows or no datasets match boundaries
-if [ "$TOTAL_FILES" -eq 0 ] || [ ! -e "${FILES[0]}" ]; then
-    echo "❌ Execution Error: No valid '.depth' file matrix targets detected in $CNV_DIR"
+if [ "$TOTAL_FILES" -eq 0 ]; then
+    echo "❌ No BAM files found in $BAM_DIR"
     exit 1
 fi
 
-# Map current Slurm task thread block to specific target file path
-FILE=${FILES[$SLURM_ARRAY_TASK_ID-1]}
+BAM_FILE=${FILES[$SLURM_ARRAY_TASK_ID-1]}
+SAMPLE_ID=$(basename "$BAM_FILE" .marked.bam)
+DEPTH_FILE="$CNV_DIR/${SAMPLE_ID}.depth"
 
-echo "📊 HPC Batch Processing Stats:"
-echo "   - Collective Matching Metrics Pool Size: $TOTAL_FILES"
-echo "   - Current Active Slurm Task ID: $SLURM_ARRAY_TASK_ID"
-echo "   - Target Processing Record Locus: $FILE"
+echo "📊 Processing sample: $SAMPLE_ID"
+echo "   BAM: $BAM_FILE"
+echo "   Depth output: $DEPTH_FILE"
 
 # ==============================================================================
-# 3. ANALYSIS EXECUTION LOOP
+# 3. STEP 1: Calculate depth (if needed)
 # ==============================================================================
-# Skip logic check to protect existing calculations
-if [ -f "${FILE}.csv" ]; then
-    echo "⏭️ Skipping $FILE — target analysis profile already computed."
+if [ ! -f "$DEPTH_FILE" ]; then
+    echo "🔢 Calculating read depth..."
+    samtools depth -b "$BED_FILE" "$BAM_FILE" > "$DEPTH_FILE"
+    
+    if [ $? -ne 0 ]; then
+        echo "❌ Depth calculation failed for $SAMPLE_ID"
+        exit 1
+    fi
+    echo "✅ Depth calculation complete"
+else
+    echo "⏭️ Depth file exists, skipping depth calculation"
+fi
+
+# ==============================================================================
+# 4. STEP 2: Process CNV with R (if needed)
+# ==============================================================================
+if [ -f "${DEPTH_FILE}.csv" ]; then
+    echo "⏭️ Skipping CNV analysis — output already exists"
     exit 0
 fi
 
-# Route arguments downstream directly into our flexible R framework
-Rscript "$CNV_RSCRIPT" "$FILE" "$GFF_FILE" "$GENES_CSV"
+echo "🧬 Running CNV analysis..."
+Rscript "$CNV_RSCRIPT" "$DEPTH_FILE" "$GFF_FILE" "$GENES_CSV"
+
+if [ $? -eq 0 ]; then
+    echo "✅ CNV analysis complete: $SAMPLE_ID"
+else
+    echo "❌ CNV analysis failed: $SAMPLE_ID"
+    exit 1
+fi

@@ -16,12 +16,13 @@ def parse_arguments():
     parser.add_argument("--snpeff-jar", required=True, help="Path to the snpEff.jar file")
     parser.add_argument("--genes-csv", required=True, help="Path to the Genes of interest CSV file")
     
-    # Optional Arguments
+    # Optional / Parallelization Arguments
     parser.add_argument("-o", "--output-dir", default=os.getcwd(), help="Directory to save all pipeline outputs (default: current directory)")
+    parser.add_argument("-s", "--sample-id", help="Specific sample ID folder to process (enables Slurm job array mode)")
     parser.add_argument("-e", "--exclude-list", help="Path to a text file containing sample IDs to skip (one per line)")
     parser.add_argument("-t", "--threads", default=8, type=int, help="Number of threads to use for alignment (default: 8)")
     
-    # Tool-specific Overrides (Useful if not running on an HPC with Lmod)
+    # Tool-specific Overrides
     parser.add_argument("--trimmomatic-jar", help="Path to trimmomatic jar (overrides $EBROOTTRIMMOMATIC)")
     parser.add_argument("--adapter-file", help="Path to Illumina adapter FASTA for trimming")
     
@@ -30,11 +31,13 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-    # ==========================================
-    # 1. SETUP AND CONFIGURATION
-    # ==========================================
-    os.makedirs(args.output_dir, exist_ok=True)
-    os.chdir(args.output_dir)
+    # Capture absolute paths immediately to prevent os.chdir() breaking relative assets
+    args.input_dir = os.path.abspath(args.input_dir)
+    args.ref_fasta = os.path.abspath(args.ref_fasta)
+    args.snpeff_jar = os.path.abspath(args.snpeff_jar)
+    args.genes_csv = os.path.abspath(args.genes_csv)
+    if args.exclude_list:
+        args.exclude_list = os.path.abspath(args.exclude_list)
 
     # Load Exclude List
     exclude_samples = set()
@@ -59,16 +62,18 @@ def main():
             trimmomatic_jar = trimmomatic_jar or os.path.join(trimmomatic_root, "trimmomatic-0.39.jar")
             adapter_file = adapter_file or os.path.join(trimmomatic_root, "adapters", "NexteraPE-PE.fa")
         else:
-            raise EnvironmentError("❌ Trimmomatic paths not provided and $EBROOTTRIMMOMATIC is not set. "
-                                   "Please load the module or use --trimmomatic-jar and --adapter-file.")
+            raise EnvironmentError("❌ Trimmomatic paths not provided and $EBROOTTRIMMOMATIC is not set.")
 
     # Check for seqkit
     try:
         subprocess.run(["seqkit", "--help"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     except subprocess.CalledProcessError:
-        raise EnvironmentError("❌ seqkit is not available in PATH. Please install or load it.")
+        raise EnvironmentError("❌ seqkit is not available in PATH.")
 
     # Setup Output Directories
+    os.makedirs(args.output_dir, exist_ok=True)
+    os.chdir(args.output_dir)
+
     step_dirs = {
         "trimmed": "1_trimming",
         "aligned": "2_alignment",
@@ -86,21 +91,28 @@ def main():
     for folder in step_dirs.values():
         os.makedirs(folder, exist_ok=True)
 
-    # ==========================================
-    # 2. SAMPLE PROCESSING LOOP
-    # ==========================================
-    for sample_folder in sorted(os.listdir(args.input_dir)):
-        sample_path = os.path.join(args.input_dir, sample_folder)
-        if not os.path.isdir(sample_path):
-            continue
+    # Determine execution routing strategy
+    if args.sample_id:
+        if not os.path.isdir(os.path.join(args.input_dir, args.sample_id)):
+            raise FileNotFoundError(f"❌ Target sample folder does not exist: {args.sample_id}")
+        sample_folders = [args.sample_id]
+        print(f"🚀 Cluster Array Node: Processing single sample: {args.sample_id}")
+    else:
+        sample_folders = sorted([f for f in os.listdir(args.input_dir) if os.path.isdir(os.path.join(args.input_dir, f))])
+        print(f"🔄 Sequentially processing total cohort: {len(sample_folders)} samples")
 
+    # ==========================================
+    # 2. SAMPLE PROCESSING LAYER
+    # ==========================================
+    for sample_folder in sample_folders:
+        sample_path = os.path.join(args.input_dir, sample_folder)
         sample_id = sample_folder
+
         if sample_id in exclude_samples:
             print(f"⏭️ Skipping excluded sample: {sample_id}")
             continue
 
         try:
-            # --- R1 & R2 FastQ Gathering ---
             def sort_by_lane(file_list):
                 def extract_lane(filename):
                     for part in filename.split("_"):
@@ -113,7 +125,7 @@ def main():
             r2_list = sort_by_lane(glob.glob(os.path.join(sample_path, "*_2.fq.gz")))
 
             if not r1_list or not r2_list:
-                print(f"⚠️ Missing R1 or R2 FASTQ for {sample_id}. Skipping.")
+                print(f"⚠️ Missing R1/R2 reads for {sample_id}. Skipping.")
                 continue
 
             print(f"\n🔄 Processing sample: {sample_id}")
@@ -236,7 +248,6 @@ def main():
             if not os.path.exists(final_csv):
                 print("📊 Extracting VCF data and filtering genes...")
                 
-                # Arrays for 9.1 Data
                 EFF, REF, ALT, QUAL, GENE, HET, POS, CHROM = [], [], [], [], [], [], [], []
                 vcf_reader1 = vcf.Reader(open(ann_vcf_91, 'r'))
                 for record in vcf_reader1:
@@ -259,7 +270,6 @@ def main():
                                         POS.append(pos)
                                         CHROM.append(chrom)
 
-                # Arrays for 9.2 Data
                 AA, GENE2 = [], []
                 vcf_reader2 = vcf.Reader(open(ann_vcf_92, 'r'))
                 for record in vcf_reader2:
@@ -274,7 +284,6 @@ def main():
                                             GENE2.append(gene_id)
                                             AA.append(aa)
 
-                # Create Pandas DataFrame
                 df = pd.DataFrame(GENE, columns=['Gene'])
                 df['Reference'] = REF
                 df['Alternative'] = ALT
@@ -297,12 +306,10 @@ def main():
             
             print(f"✅ Finished sample: {sample_id}")
 
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Error running shell command for sample {sample_id}:\n{e}\nSkipping to next sample.\n")
         except Exception as e:
-            print(f"❌ Unexpected error with sample {sample_id}: {e}\nSkipping to next sample.\n")
+            print(f"❌ Unexpected process failure for sample {sample_id}: {e}\n")
 
-    print("\n🎉 All samples processed.")
+    print("\n🎉 Analysis process layer finished.")
 
 if __name__ == "__main__":
     main()
