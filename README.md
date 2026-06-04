@@ -29,7 +29,7 @@ To maximize compute efficiency on High-Performance Computing (HPC) clusters, the
                                           │
                                           ▼
                          ===================================
-                         PATHWAY A: VARIANT CALLING PIPELINE
+                         MODULE 1: VARIANT CALLING PIPELINE
                          ===================================
                                           │
                                           ▼
@@ -44,7 +44,7 @@ To maximize compute efficiency on High-Performance Computing (HPC) clusters, the
                                           │
                                           ▼
     ┌───────────────────────────────────────────────────────────────────────────┐
-    │ 3_conversion         │ Samtools view (Convert SAM to BAM format)         │
+    │ 3_conversion         │ Samtools view (Convert SAM to BAM format)          │   
     └───────────────────────────────────────────────────────────────────────────┘
                                           │
                                           ▼
@@ -60,7 +60,7 @@ To maximize compute efficiency on High-Performance Computing (HPC) clusters, the
          ┌─────────────────────────┘                           └────────────────────────┐
          ▼                                                                              ▼
 ===================================                                            ===========================
-CONTINUATION OF VARIANT CALLING                                                PATHWAY B: CNV ANALYSIS
+CONTINUATION OF VARIANT CALLING                                                MODULE 2: CNV ANALYSIS
 ===================================                                            ===========================
          │                                                                              │
          ▼                                                                              ▼
