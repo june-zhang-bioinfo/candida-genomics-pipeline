@@ -89,7 +89,10 @@ def main():
     }
 
     for folder in step_dirs.values():
-        os.makedirs(folder, exist_ok=True)
+        try:
+            os.makedirs(folder, exist_ok=True)
+        except FileExistsError:
+            pass
 
     # Determine execution routing strategy
     if args.sample_id:
@@ -158,6 +161,9 @@ def main():
                 r2 = harmonized_r2
             else:
                 r2 = r2_list[0]
+
+            r1 = os.path.abspath(r1)
+            r2 = os.path.abspath(r2)
 
             # === Step 1: Trimmomatic ===
             trimmed_r1_paired = os.path.join(step_dirs["trimmed"], f"{sample_id}_R1_paired.fq.gz")

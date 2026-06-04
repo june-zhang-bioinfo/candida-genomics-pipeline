@@ -148,7 +148,7 @@ python scripts/run_pipeline.py \
   -i /path/to/raw_fastq_folders \
   -r /path/to/C_parapsilosis_reference.fasta \
   --snpeff-jar /path/to/snpEff.jar \
-  --genes-csv assets/Genes-of-interests.csv \
+  --genes-csv ./assets/Genes-of-interests.csv \
   -o ./results \
   --threads 8
 ```

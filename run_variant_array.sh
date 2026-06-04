@@ -5,13 +5,13 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8        
 #SBATCH --mem=16G                
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH --array=1-50             
 
 # ==============================================================================
 # 1. ENVIRONMENT SETTINGS
 # ==============================================================================
-module load StdEnv/2023 gcc/12.3 bwa/0.7.17 samtools/1.19 gatk/4.5.0.0 seqkit/2.8.0
+module load StdEnv/2023 gcc/12.3 bwa/0.7.17 samtools/1.19 gatk/4.5.0.0 seqkit/2.8.0 trimmomatic/0.39
 
 INPUT_RAW_DIR="/path/to/your/raw_fastq_directory"
 REF_FASTA="/path/to/your/reference/C_parapsilosis_reference.fasta"

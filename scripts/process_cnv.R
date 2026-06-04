@@ -24,9 +24,9 @@ library(rtracklayer)
 genes_of_interest <- read.csv(genes_csv_file)
 
 # 3. DEFINE FEATURE LOOKUP FUNCTION
-samtools_depth_mean_coverage <- function(samtools_depth_file, prokka_gff_file) {
+samtools_depth_mean_coverage <- function(samtools_depth_file, gff_file) {
   cluster <- read.table(samtools_depth_file)
-  track <- import(prokka_gff_file)
+  track <- import(gff_file)
   
   # Create a dataframe of sequence name, start, end coordinates, and gene name
   cluster_ranges <- data.frame(seqnames(track), start(track), end(track), track$Name)
