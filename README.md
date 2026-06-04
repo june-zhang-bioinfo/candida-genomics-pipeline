@@ -17,6 +17,90 @@ This repository provides a reliable, reproducible framework to process raw seque
 ## Pipeline Structure
 
 To maximize compute efficiency on High-Performance Computing (HPC) clusters, the suite is divided into two modules. This modular design prevents large memory bottlenecks and isolates processing steps.
+## Pipeline Architecture & Data Flow
+
+```text
+                      [ Raw FastQ Pairs (*_1.fq.gz, *_2.fq.gz) ]
+                                          │
+                                          ▼
+                               ┌─────────────────────┐
+                               │  Merge & Harmonize  │  (seqkit rename)
+                               └─────────────────────┘
+                                          │
+                                          ▼
+                         ===================================
+                         PATHWAY A: VARIANT CALLING PIPELINE
+                         ===================================
+                                          │
+                                          ▼
+    ┌───────────────────────────────────────────────────────────────────────────┐
+    │ 1_trimming           │ Trimmomatic PE (Quality & adapter clipping)        │
+    └───────────────────────────────────────────────────────────────────────────┘
+                                          │
+                                          ▼
+    ┌───────────────────────────────────────────────────────────────────────────┐
+    │ 2_alignment          │ BWA MEM (Align reads to C. parapsilosis Reference) │
+    └───────────────────────────────────────────────────────────────────────────┘
+                                          │
+                                          ▼
+    ┌───────────────────────────────────────────────────────────────────────────┐
+    │ 3_conversion         │ Samtools view (Convert SAM to BAM format)         │
+    └───────────────────────────────────────────────────────────────────────────┘
+                                          │
+                                          ▼
+    ┌───────────────────────────────────────────────────────────────────────────┐
+    │ 4_sorting            │ Samtools sort (Sort alignments by coordinate)      │
+    └───────────────────────────────────────────────────────────────────────────┘
+                                          │
+                                          ▼
+    ┌───────────────────────────────────────────────────────────────────────────┐
+    │ 5_marked             │ GATK MarkDuplicates (Flag PCR duplicates)          │
+    └───────────────────────────────────────────────────────────────────────────┘
+                                   │                           │
+         ┌─────────────────────────┘                           └────────────────────────┐
+         ▼                                                                              ▼
+===================================                                            ===========================
+CONTINUATION OF VARIANT CALLING                                                PATHWAY B: CNV ANALYSIS
+===================================                                            ===========================
+         │                                                                              │
+         ▼                                                                              ▼
+┌───────────────────────────────────┐                                      ┌────────────────────────────┐
+│ 6_variant_calling                 │                                      │ 11_cnv                     │
+│ GATK HaplotypeCaller (Raw VCFs)   │                                      │ Samtools depth             │
+└───────────────────────────────────┘                                      │ (Calculates locus coverage)│
+         │                                                                 └────────────────────────────┘
+         ▼                                                                              │
+┌───────────────────────────────────┐                                                   ▼
+│ 7_variant_filtering               │                                      ┌────────────────────────────┐
+│ GATK VariantFiltration            │                                      │ process_cnv.R              │
+│ (Filters out GQ < 20, DP < 10)    │                                      │ rtracklayer & dplyr        │
+└───────────────────────────────────┘                                      │ (GFF window mapping &      │
+         │                                                                 │ chromosomal normalization) │
+         ▼                                                                 └────────────────────────────┘
+┌───────────────────────────────────┐                                                   │
+│ 8_update_chr                      │                                                   ▼
+│ Sed stream edits                  │                                      [ Final CNV Report (.csv) ]
+│ (Normalizes Contig names to Chrs) │                                        (Targeted candidate genes)
+└───────────────────────────────────┘
+         │
+         ▼
+┌───────────────────────────────────┐
+│ 9.1 & 9.2_annotation              │
+│ SnpEff (Runs parallel ANN & EFF   │
+│ functional mutation profiling)    │
+└───────────────────────────────────┘
+         │
+         ▼
+┌───────────────────────────────────┐
+│ 10_vcf_extraction                 │
+│ PyVCF & Pandas                    │
+│ - Screens Genes-of-interests.csv  │
+│ - Strict quality filter (QUAL≥500)│
+└───────────────────────────────────┘
+         │
+         ▼
+[ Final Variant Annotations (.csv) ]
+ (High-quality mutations mapping)
 
 1. **Module 1: Variant Calling Pipeline (`run_variant_array.sh`)**
    A standalone Python utility that automates NGS analysis. It streams data sequentially per-sample from raw FASTQ reads all the way to functional variant annotation and candidate gene filtering.
