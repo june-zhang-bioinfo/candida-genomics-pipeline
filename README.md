@@ -101,6 +101,7 @@ CONTINUATION OF VARIANT CALLING                                                P
          ▼
 [ Final Variant Annotations (.csv) ]
  (High-quality mutations mapping)
+```
 
 1. **Module 1: Variant Calling Pipeline (`run_variant_array.sh`)**
    A standalone Python utility that automates NGS analysis. It streams data sequentially per-sample from raw FASTQ reads all the way to functional variant annotation and candidate gene filtering.
